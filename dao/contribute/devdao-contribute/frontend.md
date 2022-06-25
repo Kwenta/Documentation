@@ -47,7 +47,7 @@ They are expected to be fairly larger than screen components on average, but dev
 
 Base/core components are atomic components that wrap base HTML elements and apply basic but custom logic and styling, in accordance with Kwenta's design primitives. They are the foundational layer of the entire UI. Good examples of these include: `Button`, `Icon`, `Text` etc.
 
-The goal is for the entirety of the UI to be constructed using these as building blocks. To make this possible, a number of things must be in place:
+The goal is for the entirety of the UI to be composed using these components. To make this possible, a number of things must be in place:
 
 - They should have props that cover all expected states, based on the design primitives. It is important to note that these props should also be easy to update without requiring extensive refactoring.
 - They must contain exhaustive, yet extendable styles that respond to the state of the component.
@@ -60,13 +60,37 @@ We should eventually be able to migrate the existing section components to depen
 
 <!-- Make sure to discuss theming and responsiveness here. -->
 
-### Logic (state, queries, contexts and hooks)
+### Logic (state, queries, hooks and contexts)
 
 #### State
+
+State management is a very important part of any application. Since this application contains a number of features, it follows that there is a lot of state to keep track of. Currently, there is a hybrid approach to managing state. Some state is stored in components (which leads to prop drilling when other components have to depend on that state), and we also store some "global" state in Recoil. There is nothing particularly wrong with this approach, but it sometimes leads to confusion. How do you know what state should be stored in Recoil vs. in section components?
+
+A good rule of thumb is to consider the "influence" of each piece of state. This should generally influence where it should be stored. For example, the open/closed state of a modal should probably be stored inside a component, while the position data for the currently selected market should probably be stored in global state (Recoil), as it is accessed by multiple components.
+
+A hidden benefit of global state is it removes the need to add/remove props from multiple components, or contorting component hierarchy, just to get access to state from another component.
+
+In addition to this, selectors should be used instead of atoms when creating derived state. This removes the complexity of having to "listen" to updates from atoms, to update other atoms.
 
 
 #### Queries & Refetching
 
+Since this application depends on more than one data source (we display information from contracts, subgraphs and external APIs), handling data fetching, mutation and refetching is a complicated task.
+
+For example, one of the problems currently being dealt with is triggering data refetches to the subgraph after data is written to a contract. While this seems trivial, there are a lot of variables to account for, including, but not limited to:
+
+- Failed transactions
+- Transaction confirmation taking a long time
+- Latency between transaction confirmation and subgraph handling.
+
+We are currently working on a solution to mitigate issues around data fetching, while also accounting for every conceivable edge case.
+
+<!-- Discuss the RefetchContext -->
 
 #### Hooks
 
+Hooks are very helpful to encapsulate reusable logic. The fact that hooks can also be composed to create other hooks also means that we can further extract application logic from components, so that they can be reused, optimized and tested in isolation. Ideally, the number of hooks directly accessed within components should be reduced to a bare minimum, so that there is some form of separation of concerns. Components should handle rendering and layout, while hooks handle data and state manipulation.
+
+#### Contexts
+
+<!-- Generally should be used to hoist data that cannot be serialized in state, especially functions. A good example is the RefetchContext -->
