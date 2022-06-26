@@ -75,7 +75,7 @@ In addition to this, selectors should be used instead of atoms when creating der
 
 #### Queries & Refetching
 
-Since this application depends on more than one data source (we display information from contracts, subgraphs and external APIs), handling data fetching, mutation and refetching is a complicated task.
+Since this application depends on more than one data source (we display information from contracts, subgraphs and external APIs), handling data fetching, mutations and refetching is a complicated task.
 
 For example, one of the problems currently being dealt with is triggering data refetches to the subgraph after data is written to a contract. While this seems trivial, there are a lot of variables to account for, including, but not limited to:
 
@@ -93,4 +93,4 @@ Hooks are very helpful to encapsulate reusable logic. The fact that hooks can al
 
 #### Contexts
 
-<!-- Generally should be used to hoist data that cannot be serialized in state, especially functions. A good example is the RefetchContext -->
+Sometimes, we may need to hoist data that cannot be stored in state (usually functions). Sometimes, it may be possible to put the function logic in a hook and reuse it, but in other cases, it is important to share the same instance of the function (e.g. calling refetch on multiple queries). Contexts are the preferred method of handling these cases. However, it should be noted that there are usually very few situations where this is necessary, and hooks or global state are usually sufficient. A good example of a context in the codebase is the [RefetchContext](https://github.com/Kwenta/kwenta/blob/dev/contexts/RefetchContext.tsx).
