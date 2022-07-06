@@ -58,7 +58,19 @@ The goal is for the entirety of the UI to be composed using these components. To
 
 We should eventually be able to migrate the existing section components to depend on only the base components. This will reduce the number of changes we need to make if colors, sizes, border radii or other design motifs change in the future. It should also make it easier to ensure consistency in the behaviour of components across the UI.
 
-<!-- Make sure to discuss theming and responsiveness here. -->
+### Theming
+
+Recently, we rolled out light theme support on Kwenta. This means that going forward, style changes and additions have to account for both dark and light theme variants, as well as any other themes that might be added in the future. To make this easier, the current theme is available within the body of styled-components, as well as Recoil state (should only be used if absolutely necessary). The theme definitions can also be edited or augmented, to account for new design elements, but should generally use some existing base colors.
+
+To make sure that code changes don't break theming, this will become one of the criteria for PR reviews.
+
+### Responsiveness
+
+The existing Kwenta UI was developed with desktop users in mind. While this accounts for most users already, it is important that the experience be optimized for mobile users as well. To this end, mobile versions of the existing screens are being built. Responsiveness will also be one of the criteria for the acceptance of future pull requests.
+
+
+It should be noted that this is one of the places where section components are quite handy. Section component can be easily adapted for use in mobile contexts, since they generally contain smaller portions of the interface that are reused in the mobile designs.
+
 
 ### Logic (state, queries, hooks and contexts)
 
